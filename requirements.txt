@@ -1,0 +1,6 @@
+pandas
+SQLAlchemy
+python-dotenv
+mysql-connector-python
+polars
+pyarrow

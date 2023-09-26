@@ -1,0 +1,8 @@
+prj_venv
+*.log
+*.env
+*.xlsx
+*.csv
+*.bak
+*.ipynb
+*test.*

@@ -1,0 +1,32 @@
+{
+    "rtd": 
+    {
+        "rtd_id": "INT",
+        "rtd_date": "DATE",    
+        "rtd_time": "TEXT",    
+        "depot_id": "SMALLINT",    
+        "route_id": "INT",    
+        "bus_no": "TEXT",      
+        "bus_model_id": "SMALLINT",
+        "driver_id": "TEXT",   
+        "reason_rtd": "TEXT",  
+        "cases": "SMALLINT",       
+        "rtd_cause": "SMALLINT",   
+        "subrtd_cause": "TEXT",
+        "other_cause": "TEXT", 
+        "rtd_case_detail_id": "SMALLINT",
+        "cause_remark": "TEXT",
+        "tech_attend": "TEXT",
+        "tech_completed": "TEXT",
+        "tech_remark": "TEXT",
+        "time_arrived": "TEXT",
+        "fc_remark": "TEXT",
+        "rtd_sap_id": "TEXT",
+        "ope_approvedby": "TEXT",
+        "ope_remark": "TEXT",
+        "status": "SMALLINT",
+        "rtd_sn": "TEXT",
+        "telegram_desc": "TEXT",
+        "dt_created": "DATETIME"
+    }
+  }
