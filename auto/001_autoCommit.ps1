@@ -64,6 +64,6 @@ $timeTaken = $endTime - $startTime
 
 $executionLog = "Script executed at: $($startTime.ToString('yyyy-MM-dd HH:mm:ss'))"
 $executionLog += "`r`nTime taken: $($timeTaken.TotalSeconds) seconds"
-# $executionLog | Out-File -FilePath $executionLogPath
+$executionLog | Out-File -FilePath $executionLogPath
 
 Write-Host "Execution details logged to $executionLogPath"
