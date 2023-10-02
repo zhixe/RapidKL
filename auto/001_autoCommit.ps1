@@ -10,7 +10,7 @@ function Read-EnvVariable {
         $envVars[$key] = $value
     }
 
-    return $envVars[$variableName]
+    # return $envVars[$variableName]
 }
 
 function LogErrorHandling {
