@@ -4,6 +4,12 @@ function Read-EnvVariable {
         [string]$variableName
     )
 
+    $envPath = "../.env"
+    if (!(Test-Path -Path $envPath)) {
+        Write-Error "The .env file does not exist at path $envPath"
+        Exit 1
+    }
+
     $envVars = @{}
     Get-Content -Path $envPath | ForEach-Object {
         $key, $value = $_ -split '='
@@ -47,8 +53,12 @@ function ExecuteBackgroundJob {
 
 # Main Script
 $envPath = ".env"
-$repoDir = Read-EnvVariable -envFile $envPath -variableName "workdir"
-$logDir = Read-EnvVariable -envFile $envPath -variableName "logsdir"
+$repoDir = Read-EnvVariable -envFile $envPath -variableName "autoCommitMain"
+$logDir = Read-EnvVariable -envFile $envPath -variableName "autoCommitLogs"
+if ($logDir -match '^"') {
+    Write-Error "The logsdir variable in .env starts with a quotation mark"
+    Exit 1
+}
 
 $logFileName = "errorlog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $logFilePath = Join-Path -Path $logDir -ChildPath $logFileName
