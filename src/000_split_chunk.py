@@ -57,6 +57,17 @@ class CsvOutputProcessor:
         except Exception as e:
             f"Error writing CSV file for {base_filename}_{chunk_number}: {str(e)}"
 
+
+class parquetOutputProcessor:
+    def __init__(self, outdir):
+        self.outdir = outdir
+
+    def process_csv_output(self, parquet_file_path, chunk, base_filename, chunk_number):
+        try:
+            chunk.to_csv(parquet_file_path, index=False, header=True)
+        except Exception as e:
+            f"Error writing parquet file for {base_filename}_{chunk_number}: {str(e)}"
+
 # Define a class for handling CSV output
 class CsvOutputHandler:
     def __init__(self, outdir):
@@ -65,6 +76,14 @@ class CsvOutputHandler:
     def write_csv(self, csv_file_path, chunk, base_filename, chunk_number):
         csv_processor = CsvOutputProcessor(self.outdir)
         csv_processor.process_csv_output(csv_file_path, chunk, base_filename, chunk_number)
+
+class ParquetOutputHandler:
+    def __init__(self, outdir):
+        self.outdir = outdir
+
+    def write_csv(self, parquet_file_path, chunk, base_filename, chunk_number):
+        csv_processor = CsvOutputProcessor(self.outdir)
+        csv_processor.process_csv_output(parquet_file_path, chunk, base_filename, chunk_number)
 
 # Define a class for processing data
 class BaseFilenameProcessor:
@@ -150,8 +169,9 @@ class BaseFilenameProcessor:
         # for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
         for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
             start_time = time.time()
-            csv_filename, csv_file_path, parquet_filename, parquet_file_path = self.generate_output_filenames(base_filename, chunk_number)
-            
+            csv_filename, csv_file_path = self.generate_output_filenames(base_filename, chunk_number)
+            parquet_filename, parquet_file_path = self.generate_output_parquet(base_filename, chunk_number)
+
             csv_row_count = len(chunk)
             csv_row_counts.append(csv_row_count)
 
