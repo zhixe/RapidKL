@@ -97,13 +97,6 @@ class BaseFilenameProcessor:
     def generate_output_filenames(self, base_filename, chunk_number):
         csv_filename = f"{base_filename}_{chunk_number}.csv"
         csv_file_path = os.path.join(self.outdir, csv_filename)
-
-        # Read the CSV file into a DataFrame
-        dfT = pd.read_csv(csv_filename)
-
-        # Write the DataFrame out as a Parquet file
-        dfT.to_parquet(f'{base_filename}_{chunk_number}.parquet', index=False)
-
         return csv_filename, csv_file_path
 
     def process_chunk(self, input_file):
@@ -177,3 +170,4 @@ if __name__ == "__main__":
     # Create a Process Pool
     with Pool(processes=config.num_processes) as pool:
         pool.starmap(processor.process_chunk, [(input_file,) for input_file in input_files])
+        
