@@ -52,10 +52,10 @@ $logDir = Read-EnvVariable -envFile $envFile -variableName "logsdir"
 
 $logFileName = "errorlog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $logFilePath = Join-Path -Path $logDir -ChildPath $logFileName
-$executionLogPath = Join-Path -Path $logDir -ChildPath "autoCommit.log"
+# $executionLogPath = Join-Path -Path $logDir -ChildPath "autoCommit.log"
 
-$ErrorActionPreference = "Stop"
-$startTime = Get-Date
+# $ErrorActionPreference = "Stop"
+# $startTime = Get-Date
 
 ExecuteBackgroundJob -repoDir $workDir -logFilePath $logFilePath
 
