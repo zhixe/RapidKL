@@ -57,17 +57,6 @@ class CsvOutputProcessor:
         except Exception as e:
             f"Error writing CSV file for {base_filename}_{chunk_number}: {str(e)}"
 
-
-class parquetOutputProcessor:
-    def __init__(self, outdir):
-        self.outdir = outdir
-
-    def process_csv_output(self, parquet_file_path, chunk, base_filename, chunk_number):
-        try:
-            chunk.to_csv(parquet_file_path, index=False, header=True)
-        except Exception as e:
-            f"Error writing parquet file for {base_filename}_{chunk_number}: {str(e)}"
-
 # Define a class for handling CSV output
 class CsvOutputHandler:
     def __init__(self, outdir):
@@ -76,14 +65,6 @@ class CsvOutputHandler:
     def write_csv(self, csv_file_path, chunk, base_filename, chunk_number):
         csv_processor = CsvOutputProcessor(self.outdir)
         csv_processor.process_csv_output(csv_file_path, chunk, base_filename, chunk_number)
-
-class ParquetOutputHandler:
-    def __init__(self, outdir):
-        self.outdir = outdir
-
-    def write_csv(self, parquet_file_path, chunk, base_filename, chunk_number):
-        csv_processor = CsvOutputProcessor(self.outdir)
-        csv_processor.process_csv_output(parquet_file_path, chunk, base_filename, chunk_number)
 
 # Define a class for processing data
 class BaseFilenameProcessor:
@@ -116,13 +97,17 @@ class BaseFilenameProcessor:
     def generate_output_filenames(self, base_filename, chunk_number):
         csv_filename = f"{base_filename}_{chunk_number}.csv"
         csv_file_path = os.path.join(self.outdir, csv_filename)
-        return csv_filename, csv_file_path
 
-    def generate_output_parquet(self, base_filename, chunk_number):
-        dfT = pd.read_csv(f"{base_filename}_{chunk_number}.csv")
-        parquet_filename= dfT.to_parquet(f'{base_filename}_{chunk_number}.parquet', index=False)
-        parquet_file_path = os.path.join(self.outdir, parquet_filename)
-        return parquet_filename, parquet_file_path
+        # Initialize a SparkSession
+        spark = SparkSession.builder.appName("CSV2Parquet").getOrCreate()
+
+        # Read the CSV file into a DataFrame
+        df = spark.read.csv(csv_filename, header=True, inferSchema=True)
+
+        # Write the DataFrame out as a Parquet file
+        df.write.parquet("f{base_filename}_{chunk_number}.parquet")
+
+        return csv_filename, csv_file_path
 
     def process_chunk(self, input_file):
         # Initialize the logger for each process
@@ -164,16 +149,11 @@ class BaseFilenameProcessor:
         for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
             start_time = time.time()
             csv_filename, csv_file_path = self.generate_output_filenames(base_filename, chunk_number)
-            parquet_filename, parquet_file_path = self.generate_output_parquet(base_filename, chunk_number)
-
             csv_row_count = len(chunk)
             csv_row_counts.append(csv_row_count)
 
             csv_handler = CsvOutputHandler(self.outdir)
             csv_handler.write_csv(csv_file_path, chunk, base_filename, chunk_number)
-            
-            parquet_handler = ParquetOutputHandler(self.outdir)
-            parquet_handler.write_csv(csv_file_path, chunk, base_filename, chunk_number)
 
             csv_end_time = time.time()
             csv_execution_time = csv_end_time - start_time
@@ -200,4 +180,3 @@ if __name__ == "__main__":
     # Create a Process Pool
     with Pool(processes=config.num_processes) as pool:
         pool.starmap(processor.process_chunk, [(input_file,) for input_file in input_files])
-        
