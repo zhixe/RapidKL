@@ -97,16 +97,6 @@ class BaseFilenameProcessor:
     def generate_output_filenames(self, base_filename, chunk_number):
         csv_filename = f"{base_filename}_{chunk_number}.csv"
         csv_file_path = os.path.join(self.outdir, csv_filename)
-
-        # Initialize a SparkSession
-        spark = SparkSession.builder.appName("CSV2Parquet").getOrCreate()
-
-        # Read the CSV file into a DataFrame
-        df = spark.read.csv(csv_filename, header=True, inferSchema=True)
-
-        # Write the DataFrame out as a Parquet file
-        df.write.parquet("f{base_filename}_{chunk_number}.parquet")
-
         return csv_filename, csv_file_path
 
     def process_chunk(self, input_file):
