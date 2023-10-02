@@ -52,18 +52,18 @@ $logDir = Read-EnvVariable -envFile $envFile -variableName "logsdir"
 
 $logFileName = "errorlog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $logFilePath = Join-Path -Path $logDir -ChildPath $logFileName
-# $executionLogPath = Join-Path -Path $logDir -ChildPath "autoCommit.log"
+$executionLogPath = Join-Path -Path $logDir -ChildPath "autoCommit.log"
 
-# $ErrorActionPreference = "Stop"
-# $startTime = Get-Date
+$ErrorActionPreference = "Stop"
+$startTime = Get-Date
 
 ExecuteBackgroundJob -repoDir $workDir -logFilePath $logFilePath
 
-# $endTime = Get-Date
-# $timeTaken = $endTime - $startTime
+$endTime = Get-Date
+$timeTaken = $endTime - $startTime
 
-# $executionLog = "Script executed at: $($startTime.ToString('yyyy-MM-dd HH:mm:ss'))"
-# $executionLog += "`r`nTime taken: $($timeTaken.TotalSeconds) seconds"
-# $executionLog | Out-File -FilePath $executionLogPath
+$executionLog = "Script executed at: $($startTime.ToString('yyyy-MM-dd HH:mm:ss'))"
+$executionLog += "`r`nTime taken: $($timeTaken.TotalSeconds) seconds"
+$executionLog | Out-File -FilePath $executionLogPath
 
-# Write-Host "Execution details logged to $executionLogPath"
+Write-Host "Execution details logged to $executionLogPath"
