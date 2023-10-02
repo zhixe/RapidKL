@@ -13,4 +13,4 @@ output/*
 archived/*
 %*/*
 logs/*.log
-src/tmp/
+**/tmp/
