@@ -46,7 +46,7 @@ function ExecuteBackgroundJob {
 }
 
 # Main Script
-$envFile = ".env"
+$envFile = "../.env"
 $workDir = Read-EnvVariable -envFile $envFile -variableName "workdir"
 $logDir = Read-EnvVariable -envFile $envFile -variableName "logsdir"
 
