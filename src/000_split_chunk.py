@@ -98,14 +98,11 @@ class BaseFilenameProcessor:
         csv_filename = f"{base_filename}_{chunk_number}.csv"
         csv_file_path = os.path.join(self.outdir, csv_filename)
 
-        # Initialize a SparkSession
-        spark = SparkSession.builder.appName("CSV2Parquet").getOrCreate()
-
         # Read the CSV file into a DataFrame
-        df = spark.read.csv(csv_filename, header=True, inferSchema=True)
+        dfT = pd.read_csv(csv_filename)
 
         # Write the DataFrame out as a Parquet file
-        df.write.parquet("f{base_filename}_{chunk_number}.parquet")
+        dfT.to_parquet(f'{base_filename}_{chunk_number}.parquet', index=False)
 
         return csv_filename, csv_file_path
 
