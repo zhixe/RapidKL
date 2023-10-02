@@ -133,7 +133,7 @@ class BaseFilenameProcessor:
         elif total_length < 10000000:
             self.chunk_size = 1000000
         elif total_length >= 100000000:
-            self.chunk_size = 10000000
+            self.chunk_size = 1000000
 
         # for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
         for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
