@@ -98,9 +98,9 @@ class BaseFilenameProcessor:
         csv_filename = f"{base_filename}_{chunk_number}.csv"
         csv_file_path = os.path.join(self.outdir, csv_filename)
 
-        parquet_filename = f"{csv_filename}.csv"
-        dfT = pd.read_csv(parquet_filename)
-        parquet_file_path = dfT.to_parquet(f'{base_filename}_{chunk_number}.parquet', index=False)
+        dfT = pd.read_csv(csv_filename)
+        parquet_filename= dfT.to_parquet(f'{base_filename}_{chunk_number}.parquet', index=False)
+        parquet_file_path = os.path.join(self.outdir, parquet_filename)
 
         return csv_filename, csv_file_path, parquet_filename, parquet_file_path
 
@@ -143,8 +143,7 @@ class BaseFilenameProcessor:
         # for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
         for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
             start_time = time.time()
-            csv_filename, csv_file_path = self.generate_output_filenames(base_filename, chunk_number)
-            parquet_filename, parquet_file_path = self.generate_output_filenames(base_filename, chunk_number)
+            csv_filename, csv_file_path, parquet_filename, parquet_file_path = self.generate_output_filenames(base_filename, chunk_number)
             
             csv_row_count = len(chunk)
             csv_row_counts.append(csv_row_count)
