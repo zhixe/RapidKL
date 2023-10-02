@@ -57,21 +57,6 @@ class CsvOutputProcessor:
         except Exception as e:
             f"Error writing CSV file for {base_filename}_{chunk_number}: {str(e)}"
 
-class CsvParquetOutputProcessor:
-    def __init__(self, outdir):
-        self.outdir = outdir
-
-    def process_csv_output(self, csv_file_path, parquet_file_path, chunk, base_filename, chunk_number):
-        try:
-            # Write to CSV
-            chunk.to_csv(csv_file_path, index=False, header=True)
-
-            # Convert DataFrame to Parquet and write to file
-            chunk.to_parquet(parquet_file_path, index=False)
-        except Exception as e:
-            f"Error processing files for {base_filename}_{chunk_number}: {str(e)}"
-
-
 # Define a class for handling CSV output
 class CsvOutputHandler:
     def __init__(self, outdir):
@@ -80,15 +65,6 @@ class CsvOutputHandler:
     def write_csv(self, csv_file_path, chunk, base_filename, chunk_number):
         csv_processor = CsvOutputProcessor(self.outdir)
         csv_processor.process_csv_output(csv_file_path, chunk, base_filename, chunk_number)
-
-# Define a class for handling CSV and Parquet output
-class CsvParquetOutputHandler:
-    def __init__(self, outdir):
-        self.outdir = outdir
-
-    def write_csv_parquet(self, csv_file_path, parquet_file_path, chunk, base_filename, chunk_number):
-        processor = CsvParquetOutputProcessor(self.outdir)
-        processor.process_csv_output(csv_file_path, parquet_file_path, chunk, base_filename, chunk_number)
 
 # Define a class for processing data
 class BaseFilenameProcessor:
@@ -120,10 +96,8 @@ class BaseFilenameProcessor:
 
     def generate_output_filenames(self, base_filename, chunk_number):
         csv_filename = f"{base_filename}_{chunk_number}.csv"
-        parquet_filename = f"{base_filename}_{chunk_number}.parquet"
         csv_file_path = os.path.join(self.outdir, csv_filename)
-        parquet_file_path = os.path.join(self.outdir, parquet_filename)
-        return csv_filename, csv_file_path, parquet_filename, parquet_file_path
+        return csv_filename, csv_file_path
 
     def process_chunk(self, input_file):
         # Initialize the logger for each process
@@ -164,11 +138,7 @@ class BaseFilenameProcessor:
         # for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
         for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
             start_time = time.time()
-            csv_filename, csv_file_path, parquet_filename, parquet_file_path = self.generate_output_filenames(base_filename, chunk_number)
-
-            csv_parquet_handler = CsvParquetOutputHandler(self.outdir)
-            csv_parquet_handler.write_csv_parquet(csv_file_path, parquet_file_path, chunk, base_filename, chunk_number)
-
+            csv_filename, csv_file_path = self.generate_output_filenames(base_filename, chunk_number)
             csv_row_count = len(chunk)
             csv_row_counts.append(csv_row_count)
 
