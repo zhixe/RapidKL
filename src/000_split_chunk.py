@@ -97,7 +97,12 @@ class BaseFilenameProcessor:
     def generate_output_filenames(self, base_filename, chunk_number):
         csv_filename = f"{base_filename}_{chunk_number}.csv"
         csv_file_path = os.path.join(self.outdir, csv_filename)
-        return csv_filename, csv_file_path
+
+        parquet_filename = f"{csv_filename}.csv"
+        dfT = pd.read_csv(parquet_filename)
+        parquet_file_path = dfT.to_parquet(f'{base_filename}_{chunk_number}.parquet', index=False)
+
+        return csv_filename, csv_file_path, parquet_filename, parquet_file_path
 
     def process_chunk(self, input_file):
         # Initialize the logger for each process
@@ -139,6 +144,8 @@ class BaseFilenameProcessor:
         for chunk_number, chunk in enumerate(pd.read_csv(input_file, chunksize=self.chunk_size, low_memory=False), start=1):
             start_time = time.time()
             csv_filename, csv_file_path = self.generate_output_filenames(base_filename, chunk_number)
+            parquet_filename, parquet_file_path = self.generate_output_filenames(base_filename, chunk_number)
+            
             csv_row_count = len(chunk)
             csv_row_counts.append(csv_row_count)
 
