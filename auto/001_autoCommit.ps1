@@ -67,3 +67,4 @@ $executionLog += "`r`nTime taken: $($timeTaken.TotalSeconds) seconds"
 $executionLog | Out-File -FilePath $executionLogPath
 
 Write-Host "Execution details logged to $executionLogPath"
+Write-Host $executionLogPath
