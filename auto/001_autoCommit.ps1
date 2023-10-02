@@ -38,7 +38,7 @@ function ExecuteBackgroundJob {
     )
 
     try {
-        Set-Location -Path "$repoDir"
+        Set-Location -Path $repoDir
         Clear-Host
         git pull
         git add .
@@ -56,20 +56,20 @@ $envPath = ".env"
 $repoDir = Read-EnvVariable -envFile $envPath -variableName "autoCommitMain"
 $logDir = Read-EnvVariable -envFile $envPath -variableName "autoCommitLogs"
 
-# Check the environment variables for powershell contain any quotation mark. Powershell cannot 
-# if ($logDir -match '^"') {
-#     Write-Error "The logsdir variable in .env starts with a quotation mark"
-#     Exit 1
-# }
+# Check the environment variables whether it contains any quotation mark, because PowerShell could interpret it as part of a string rather than a variable which ends up with error.
+    if ($logDir -match '^"' -or $repoDir -match '^"') {
+        Write-Error "The logsdir variable in .env starts with a quotation mark"
+        Exit 1
+    }
 
 $logFileName = "errorlog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
-$logFilePath = Join-Path -Path "$logDir" -ChildPath $logFileName
-$executionLogPath = Join-Path -Path "$logDir" -ChildPath "auto_commit.log"
+$logFilePath = Join-Path -Path $logDir -ChildPath $logFileName
+$executionLogPath = Join-Path -Path $logDir -ChildPath "auto_commit.log"
 
 $ErrorActionPreference = "Stop"
 $startTime = Get-Date
 
-ExecuteBackgroundJob -repoDir "$repoDir" -logFilePath $logFilePath
+ExecuteBackgroundJob -repoDir $repoDir -logFilePath $logFilePath
 
 $endTime = Get-Date
 $timeTaken = $endTime - $startTime
