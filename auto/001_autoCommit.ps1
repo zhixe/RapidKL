@@ -57,8 +57,11 @@ $repoDir = Read-EnvVariable -envFile $envPath -variableName "autoCommitMain"
 $logDir = Read-EnvVariable -envFile $envPath -variableName "autoCommitLogs"
 
 # Check the environment variables whether it contains any quotation mark, because PowerShell could interpret it as part of a string rather than a variable which ends up with error.
-    if ($logDir -match '^"' -or $repoDir -match '^"') {
-        Write-Error "The logsdir variable in .env starts with a quotation mark"
+    if ($logDir -match '^"') {
+        Write-Error "The autoCommitLogs variable in .env starts with a quotation mark!"
+        Exit 1
+    } elseif ($repoDir -match '^"') {
+        Write-Error "The autoCommitMain variable in .env starts with a quotation mark!"
         Exit 1
     }
 
