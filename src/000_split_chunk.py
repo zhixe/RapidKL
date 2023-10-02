@@ -104,6 +104,13 @@ class BaseFilenameProcessor:
 
         return csv_filename, csv_file_path, parquet_filename, parquet_file_path
 
+    def generate_output_parquet(self, base_filename, chunk_number):
+        dfT = pd.read_csv(f"{base_filename}_{chunk_number}.csv")
+        parquet_filename= dfT.to_parquet(f'{base_filename}_{chunk_number}.parquet', index=False)
+        parquet_file_path = os.path.join(self.outdir, parquet_filename)
+
+        return parquet_filename, parquet_file_path
+
     def process_chunk(self, input_file):
         # Initialize the logger for each process
         logger = DataProcessorLogger(self.config.log_dir)
