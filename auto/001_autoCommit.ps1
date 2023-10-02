@@ -1,11 +1,11 @@
 function Read-EnvVariable {
     param (
-        [string]$envFile,
+        [string]$envPath,
         [string]$variableName
     )
 
     $envVars = @{}
-    Get-Content -Path $envFile | ForEach-Object {
+    Get-Content -Path $envPath | ForEach-Object {
         $key, $value = $_ -split '='
         $envVars[$key] = $value
     }
@@ -26,13 +26,13 @@ function LogErrorHandling {
 
 function ExecuteBackgroundJob {
     param (
-        [string]$workDir,
+        [string]$repoDir,
         [string]$logDir,
         [string]$logFilePath
     )
 
     try {
-        Set-Location -Path $workDir
+        Set-Location -Path $repoDir
         Clear-Host
         git pull
         git add .
@@ -46,24 +46,24 @@ function ExecuteBackgroundJob {
 }
 
 # Main Script
-$envFile = "../.env"
-$workDir = Read-EnvVariable -envFile $envFile -variableName "workdir"
-$logDir = Read-EnvVariable -envFile $envFile -variableName "logsdir"
+$envPath = "../.env"
+$repoDir = Read-EnvVariable -envFile $envPath -variableName "workdir"
+$logDir = Read-EnvVariable -envFile $envPath -variableName "logsdir"
 
 $logFileName = "errorlog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $logFilePath = Join-Path -Path $logDir -ChildPath $logFileName
-# $executionLogPath = Join-Path -Path $logDir -ChildPath "autoCommit.log"
+$executionLogPath = Join-Path -Path $logDir -ChildPath "execution_time.log"
 
 $ErrorActionPreference = "Stop"
 $startTime = Get-Date
 
-ExecuteBackgroundJob -repoDir $workDir -logFilePath $logFilePath
+ExecuteBackgroundJob -repoDir $repoDir -logFilePath $logFilePath
 
 $endTime = Get-Date
 $timeTaken = $endTime - $startTime
 
 $executionLog = "Script executed at: $($startTime.ToString('yyyy-MM-dd HH:mm:ss'))"
 $executionLog += "`r`nTime taken: $($timeTaken.TotalSeconds) seconds"
-# $executionLog | Out-File -FilePath $executionLogPath
+$executionLog | Out-File -FilePath $executionLogPath
 
 Write-Host "Execution details logged to $executionLogPath"
