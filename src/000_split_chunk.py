@@ -117,7 +117,7 @@ class BaseFilenameProcessor:
         csv_row_counts = []
 
         # Count total rows of a single CSV file
-        lz_df = pl.scan_csv(input_fil, infer_schema_length=10000, null_values=['03003d'])
+        lz_df = pl.scan_csv(input_file, infer_schema_length=10000, null_values=['03003d'])
         df = lz_df.collect()
         num_rows = df.shape[0]
         # print(f"{num_rows}")
