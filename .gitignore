@@ -6,3 +6,11 @@ prj_venv
 *.bak
 *.ipynb
 *test.*
+*.ipynb
+output/*
+*.pyc
+**/__pycache__/
+archived/*
+%*/*
+logs/*.log
+**/tmp/
