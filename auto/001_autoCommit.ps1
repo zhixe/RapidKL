@@ -48,11 +48,11 @@ function ExecuteBackgroundJob {
 # Main Script
 $envFile = "../.env"
 $workDir = Read-EnvVariable -envFile $envFile -variableName "workdir"
-$logDir = Read-EnvVariable -envFile $envFile -variableName "autoCommitLogs"
+$logDir = Read-EnvVariable -envFile $envFile -variableName "logsdir"
 
 $logFileName = "errorlog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $logFilePath = Join-Path -Path $logDir -ChildPath $logFileName
-$executionLogPath = Join-Path -Path $logDir -ChildPath "execution_time.log"
+$executionLogPath = Join-Path -Path $logDir -ChildPath "autoCommit.log"
 
 $ErrorActionPreference = "Stop"
 $startTime = Get-Date
