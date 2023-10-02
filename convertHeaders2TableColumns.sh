@@ -4,3 +4,5 @@ paste -d " " <(head -1 accident.csv | tr "," "\n" | awk '{print "self."$1}') <(h
 head -1 accident.csv | tr "," "\n" | awk '{print "self."$1}' | awk '{print "{"$1"}"}'
 
 paste -d " " <(head -1 rtd.csv | tr "," "\n" | awk '{print "@"$1"@:"}' | sed "s/@/\"/g") <(head -1 rtd.csv | tr "," "\n" | awk '{print "@TEXT@,"}' | sed "s/@/\"/g")
+
+ls *.csv | while read a; do echo -e "Database $(basename $a .csv): $(sed "1d" $a | wc -l)"; done
